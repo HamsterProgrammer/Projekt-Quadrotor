@@ -7,7 +7,28 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer>& gRenderer)
     int q_x, q_y;
     const int q_width = 200, q_height = 15;
     float q_theta;
-
+    int obrot;//obrot propelerów
+    
+  static int dt = 0;
+  static bool petla = 0;
+  if(petla == 0)
+    {
+      dt=dt+1;
+      if(dt == 10)
+      {
+        petla = 1;
+        
+      }
+    } 
+    if(petla == 1)
+    {
+      dt = dt - 1;
+      if(dt == 0)
+      {
+        petla = 0; 
+      }
+    }
+    obrot = dt;
     q_x = state[0];
     q_y = state[1];
     q_theta = state[2];
@@ -22,10 +43,10 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer>& gRenderer)
     boxRGBA(gRenderer.get(), q_x + 50, q_y - 25, q_x + 58, q_y + 15, 100, 100, 100, 255);
 
     // Draw infinity symbol (propellers)
-    filledEllipseRGBA(gRenderer.get(), q_x + 40, q_y - 25, 15, 6, 0, 0, 255, 255);
-    filledEllipseRGBA(gRenderer.get(), q_x + 66, q_y -25, 15, 6, 0, 0, 255, 255);
-    filledEllipseRGBA(gRenderer.get(), q_x + 140, q_y - 25, 15, 6, 0, 0, 255, 255);
-    filledEllipseRGBA(gRenderer.get(), q_x + 166, q_y -25, 15, 6, 0, 0, 255, 255);
+    filledEllipseRGBA(gRenderer.get(), q_x + 40+obrot, q_y - 25, 15-obrot, 6, 0, 0, 255, 255);//l1
+    filledEllipseRGBA(gRenderer.get(), q_x + 66-obrot, q_y -25, 15-obrot, 6, 0, 0, 255, 255);//l2
+    filledEllipseRGBA(gRenderer.get(), q_x + 140+obrot, q_y - 25, 15-obrot, 6, 0, 0, 255, 255);//p1
+    filledEllipseRGBA(gRenderer.get(), q_x + 166-obrot, q_y -25, 15-obrot, 6, 0, 0, 255, 255);//p2
 
     // Draw center hub for propellers
     filledCircleRGBA(gRenderer.get(), q_x +54, q_y -25, 4, 0, 0, 0, 255);
