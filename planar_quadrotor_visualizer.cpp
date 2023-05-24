@@ -5,6 +5,37 @@ PlanarQuadrotorVisualizer::PlanarQuadrotorVisualizer(PlanarQuadrotor* quadrotor_
 void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer>& gRenderer) {
     Eigen::VectorXf state = quadrotor_ptr->GetState();
     int q_x, q_y;
+    const int q_width = 202, q_height = 64; 
+    float q_theta;
+    q_x = state[0];     
+    q_y = state[1];
+    q_theta = state[2];
+    static int dt = 0;
+    dt=dt+1;
+    if(dt == 5)
+    {
+      dt = 0;
+    }
+    
+    SDL_SetRenderDrawColor(gRenderer.get(), 0xFF, 0x00, 0x00, 0xFF);
+    SDL_Rect eksperyment;
+    SDL_Rect podst  = {q_x, q_y, q_width, q_height};   
+   
+    SDL_Rect animacja = {20+240*dt, 36, 202, 64};
+                        
+    eksperyment.x = q_x;
+    eksperyment.y = q_y;
+    eksperyment.w = q_width;
+    eksperyment.h = q_height; 
+    SDL_Surface* powierzchnia = SDL_LoadBMP("quadrotor.bmp");
+    
+    SDL_Texture *tekstura = SDL_CreateTextureFromSurface(gRenderer.get(), powierzchnia);
+    SDL_RenderCopyEx(gRenderer.get(), tekstura, &animacja, &podst, q_theta, NULL, SDL_FLIP_NONE);
+    SDL_FreeSurface(powierzchnia);
+    SDL_DestroyTexture(tekstura);
+} 
+    /*   Eigen::VectorXf state = quadrotor_ptr->GetState();
+    int q_x, q_y;
     const int q_width = 200, q_height = 15;
     float q_theta;
     int obrot;//obrot propelerów
@@ -53,23 +84,18 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer>& gRenderer)
     filledCircleRGBA(gRenderer.get(), q_x + 154, q_y -25, 4, 0, 0, 0, 255);
 }
 
-/*#include "planar_quadrotor_visualizer.h"// to jest do rysowania tego drona
+#include "planar_quadrotor_visualizer.h"// to jest do rysowania tego drona
 
 PlanarQuadrotorVisualizer::PlanarQuadrotorVisualizer(PlanarQuadrotor *quadrotor_ptr): quadrotor_ptr(quadrotor_ptr) {}
 
-/*
- * TODO: Improve visualizetion
- * 1. Transform coordinates from quadrotor frame to image frame so the circle is in the middle of the screen
- * 2. Use more shapes to represent quadrotor (e.x. try replicate http://underactuated.mit.edu/acrobot.html#section3 or do something prettier)
- * 3. Animate proppelers (extra points)
- */
+
 void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer> &gRenderer) {
     Eigen::VectorXf state = quadrotor_ptr->GetState();
     int q_x, q_y;
     const int q_width = 200, q_height = 15; 
     float q_theta;
 
-    /* x, y, theta coordinates -- kordy kółka i wychylenia */
+   
     q_x = state[0];     
     q_y = state[1];
     q_theta = state[2];
