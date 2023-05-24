@@ -27,7 +27,7 @@ void PlanarQuadrotorVisualizer::render(std::shared_ptr<SDL_Renderer>& gRenderer)
     eksperyment.y = q_y;
     eksperyment.w = q_width;
     eksperyment.h = q_height; 
-    SDL_Surface* powierzchnia = SDL_LoadBMP("quadrotor.bmp");
+    SDL_Surface* powierzchnia = SDL_LoadBMP("quadrotor.bmp");  // bmp idzie do folderu build
     
     SDL_Texture *tekstura = SDL_CreateTextureFromSurface(gRenderer.get(), powierzchnia);
     SDL_RenderCopyEx(gRenderer.get(), tekstura, &animacja, &podst, q_theta, NULL, SDL_FLIP_NONE);
