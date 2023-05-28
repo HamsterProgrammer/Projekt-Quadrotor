@@ -1,7 +1,9 @@
 #pragma once
 
+#include <SDL.h>
 #include <Eigen/Dense>
 #include <tuple>
+#include <SDL_mixer.h>
 
 #include "lqr.h"
 
@@ -13,6 +15,9 @@ private:
     // m, I, r, g parameters
     Eigen::VectorXf params = Eigen::Vector4f(0.486, 0.00383, 0.25, 9.81); 
     Eigen::Vector2f input = Eigen::Vector2f::Zero();
+
+    Mix_Music* music = nullptr;
+
 public:
     PlanarQuadrotor();
     PlanarQuadrotor(Eigen::VectorXf z);
@@ -26,4 +31,9 @@ public:
     void DoUpdateState(float dt);
     Eigen::VectorXf Update(Eigen::Vector2f &input, float dt);
     Eigen::VectorXf Update(float dt);
+
+    void playMusic(const char* filePath, int volume);
+    void setVolume(int volume);
+    void cleanMusic(); 
+    void getDistance(float xBefore, float yBefore, float xNow, float yNow, float xwc, float ywc, float &volume);
 };
