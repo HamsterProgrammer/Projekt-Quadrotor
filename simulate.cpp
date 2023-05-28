@@ -49,7 +49,6 @@ int main(int argc, char* args[])
     const float SCREEN_W_CENTER = SCREEN_WIDTH/2;
     const float SCREEN_H_CENTER = SCREEN_HEIGHT/2;
     float volume = 128;
-    Mix_Init();
     /**
      * TODO: Extend simulation
      * 1. Set goal state of the mouse when clicking left mouse button (transform the coordinates to the quadrotor world! see visualizer TODO list)
