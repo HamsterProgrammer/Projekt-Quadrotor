@@ -14,6 +14,55 @@ PlanarQuadrotor::PlanarQuadrotor() {
 
 PlanarQuadrotor::PlanarQuadrotor(Eigen::VectorXf z): z(z) {}
 
+void PlanarQuadrotor::playMusic(const char* filePath, int volume){
+    int result = Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 1024 );
+// Check load
+if ( result != 0 ) {
+	std::cout << "Failed to open audio: " << Mix_GetError() << std::endl;
+}
+    cleanMusic();
+    music = Mix_LoadMUS(filePath);
+    if (music == nullptr) {
+        std::cout << "Failed to load sound effect: " << Mix_GetError() << std::endl;
+    }   
+        if (music != nullptr) {
+        Mix_PlayMusic( music, -1 );
+        setVolume(volume);
+    }
+}
+
+void PlanarQuadrotor::setVolume(int volume){
+    Mix_VolumeMusic(volume);
+}
+
+void PlanarQuadrotor::cleanMusic(){
+        if (music != nullptr) {
+        Mix_FreeMusic( music );
+        music = NULL;
+    }
+} 
+
+    void PlanarQuadrotor::getDistance(float xBefore, float yBefore, float xNow, float yNow, float xwc, float ywc, float &volume) // x window center, y window center
+    { 
+        float k = 0.33; //koeficient for volume
+        int aw=0; //distance before
+        int bw=0; //distance to the window center now
+        aw=(xwc - xBefore)*(xwc - xBefore)+(ywc - yBefore)*(ywc - yBefore);
+        bw=(xwc - xNow)*(xwc - xNow)+(ywc - yNow)*(ywc - yNow);
+        if(aw>bw){
+            if(volume <128)
+            volume +=k;
+            setVolume(volume);
+           //std::cout<<" Volume increased; xBefore = " << xBefore << " yBefore = " << yBefore << " xNow, yNow " << xNow<<" "<<yNow << " Volume   " << volume << std::endl;
+
+        } else{
+            if(volume >0)
+            volume -=k;
+            setVolume(volume);
+           //std::cout<<" Volume decreased; xBefore = " << xBefore << " yBefore = " << yBefore << " xNow, yNow " << xNow<<" "<<yNow<< " Volume   " << volume << std::endl;
+        }
+    }
+
 void PlanarQuadrotor::SetGoal(Eigen::VectorXf z_goal) {
     this->z_goal = z_goal;
 }
