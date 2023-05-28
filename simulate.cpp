@@ -49,8 +49,7 @@ int main(int argc, char* args[])
     const float SCREEN_W_CENTER = SCREEN_WIDTH/2;
     const float SCREEN_H_CENTER = SCREEN_HEIGHT/2;
     float volume = 128;
-   // AudioManager1.playMusic("dron_fly.wav", 100);
-
+    Mix_Init();
     /**
      * TODO: Extend simulation
      * 1. Set goal state of the mouse when clicking left mouse button (transform the coordinates to the quadrotor world! see visualizer TODO list)
@@ -63,7 +62,7 @@ int main(int argc, char* args[])
     
     PlanarQuadrotor quadrotor(initial_state);
     PlanarQuadrotorVisualizer quadrotor_visualizer(&quadrotor);
-    //quadrotor.playMusic("dron_fly.wav", 100);
+    quadrotor.playMusic("dron_fly.wav", volume);
     /**
      * Goal pose for the quadrotor
      * [x, y, theta, x_dot, y_dot, theta_dot]  
@@ -158,8 +157,8 @@ int main(int argc, char* args[])
             quadrotor.Update(dt);
             }
     }
-   // Mix_Quit();
     SDL_Quit();
+    quadrotor.cleanMusic();
     return 0;
 }
 
