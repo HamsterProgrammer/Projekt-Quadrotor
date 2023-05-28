@@ -39,6 +39,7 @@ void PlanarQuadrotor::cleanMusic(){
         if (music != nullptr) {
         Mix_FreeMusic( music );
         music = NULL;
+        Mix_CloseAudio();
     }
 } 
 
