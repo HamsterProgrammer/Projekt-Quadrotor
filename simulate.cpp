@@ -3,7 +3,7 @@
 */
 #include "simulate.h"
 
-Eigen::MatrixXf LQR(PlanarQuadrotor &quadrotor, float dt) { 
+    Eigen::MatrixXf LQR(PlanarQuadrotor &quadrotor, float dt) { 
     /* Calculate LQR gain matrix */
     Eigen::MatrixXf Eye = Eigen::MatrixXf::Identity(6, 6);
     Eigen::MatrixXf A = Eigen::MatrixXf::Zero(6, 6);
@@ -40,13 +40,16 @@ void wykres_x (std::vector<float> x, std::vector<float> y, std::vector<float> th
     plot(t, theta, "-o");
 }
 
-
 int main(int argc, char* args[])
 {
     std::shared_ptr<SDL_Window> gWindow = nullptr;
     std::shared_ptr<SDL_Renderer> gRenderer = nullptr;
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
+    const float SCREEN_W_CENTER = SCREEN_WIDTH/2;
+    const float SCREEN_H_CENTER = SCREEN_HEIGHT/2;
+    float volume = 128;
+   // AudioManager1.playMusic("dron_fly.wav", 100);
 
     /**
      * TODO: Extend simulation
@@ -60,6 +63,7 @@ int main(int argc, char* args[])
     
     PlanarQuadrotor quadrotor(initial_state);
     PlanarQuadrotorVisualizer quadrotor_visualizer(&quadrotor);
+    //quadrotor.playMusic("dron_fly.wav", 100);
     /**
      * Goal pose for the quadrotor
      * [x, y, theta, x_dot, y_dot, theta_dot]  
@@ -84,7 +88,9 @@ int main(int argc, char* args[])
     std::vector<float> time_history;
     float time_current = dt;
 
-    
+    std::vector<float>::iterator iterX = x_history.begin();
+    std::vector<float>::iterator iterY = y_history.begin();
+
     if (init(gWindow, gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT) >= 0)
     {
         SDL_Event e;
@@ -95,7 +101,7 @@ int main(int argc, char* args[])
         Eigen::VectorXf state = Eigen::VectorXf::Zero(6);
 
         while (!quit)
-        {
+        {  
             //events
             while (SDL_PollEvent(&e) != 0)      
             {                                                 
@@ -122,11 +128,9 @@ int main(int argc, char* args[])
                     {
                         std::cout << "Pressed p" << std::endl;
                         wykres_x(x_history, y_history, theta_history ,time_history);
-                    
                     }
                 }
             }
-            
             Eigen::VectorXf history = quadrotor.GetState();         // zapisywanie w czasie
             x_history.push_back(history(0));
             y_history.push_back(history(1));
@@ -134,6 +138,10 @@ int main(int argc, char* args[])
             time_history.push_back(time_current);
             time_current = time_current + dt;
 
+            iterX=x_history.end();
+            iterY=y_history.end();
+
+            quadrotor.getDistance(x_history.end()[-2], y_history.end()[-2], x_history.end()[-1], y_history.end()[-1], SCREEN_W_CENTER, SCREEN_H_CENTER, volume);
 
             SDL_Delay((int) dt * 1000);
             
@@ -148,10 +156,9 @@ int main(int argc, char* args[])
             /* Simulate quadrotor forward in time */
             control(quadrotor, K);
             quadrotor.Update(dt);
-        }
+            }
     }
-
-
+   // Mix_Quit();
     SDL_Quit();
     return 0;
 }
@@ -172,4 +179,3 @@ int init(std::shared_ptr<SDL_Window>& gWindow, std::shared_ptr<SDL_Renderer>& gR
     }
     return 0;
 }
-
